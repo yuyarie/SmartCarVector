@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f9">
+  <title>Vector · 智能车实验室</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <svg class="icon-defs" aria-hidden="true"><defs>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 2 8M4 4v6h6"/></symbol>
+    <symbol id="i-fit" viewBox="0 0 24 24"><path d="M4 9V4h5m6 0h5v5m0 6v5h-5M9 20H4v-5"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 2v5m0 10v5M2 12h5m10 0h5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 4v16h16M7 14l4-5 4 3 5-8"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M4 3h13l3 3v15H4ZM8 3v6h8V3M8 21v-8h8v8"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-mouse" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 6v4"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><path d="M3 3h18v18H3Zm6 0v18m6-18v18M3 9h18M3 15h18"/></symbol>
+  </defs></svg>
+
+  <header class="app-header">
+    <a class="brand" href="./" aria-label="Vector 智能车实验室"><span class="brand-mark">V<span></span></span><span>VECTOR<span class="brand-sub">智能车实验室</span></span><span class="version">LAB / 01</span></a>
+    <div class="header-context"><span class="status-dot"></span>二维仿真工作台 <span class="divider">/</span> 红外 · 双轮 · 惯导</div>
+    <div class="header-actions"><span class="runtime" id="runtime">00:00.00</span><label class="speed-control"><span>模拟速度</span><select id="simulation-speed" aria-label="模拟速度" title="即时调整模拟速度，不重置仿真" disabled><option value="1">1×</option></select></label><button class="button primary" id="toggle-run" disabled><svg><use href="#i-play"/></svg><span>开始仿真</span><kbd>Space</kbd></button><button class="button" id="reset" title="重置仿真"><svg><use href="#i-reset"/></svg>重置</button></div>
+  </header>
+
+  <main class="workspace">
+    <section class="scene-column" aria-label="赛道模拟区">
+      <div class="section-heading"><div><span class="eyebrow">SIMULATION CANVAS</span><h1>赛道工作区<span class="tag">2D</span></h1></div><span id="run-status" class="state-badge"><i></i>等待开始</span></div>
+      <div class="scene" id="scene">
+        <canvas id="track-canvas" aria-label="赛道俯视图：拖动车辆，拖动时滚轮旋转；空白处拖动平移，滚轮缩放" tabindex="0"></canvas>
+        <div class="scene-top"><div class="track-label"><span class="track-icon"><svg><use href="#i-grid"/></svg></span><div><strong id="track-name">正在载入赛道…</strong><span id="track-size">从 config.json 读取配置</span></div></div><span class="scene-chip" id="scale-label">1.0× 实时</span></div>
+        <div class="view-tools" aria-label="视图工具"><button id="zoom-in" title="放大" aria-label="放大"><svg><use href="#i-plus"/></svg></button><span id="zoom-level">100%</span><button id="zoom-out" title="缩小" aria-label="缩小"><svg><use href="#i-minus"/></svg></button><span class="tool-separator"></span><button id="fit-view" title="适应赛道" aria-label="适应赛道"><svg><use href="#i-fit"/></svg></button><button id="locate-car" title="定位车辆" aria-label="定位车辆"><svg><use href="#i-pin"/></svg></button><span class="tool-separator"></span><button id="follow-car" class="follow-button" title="开启视角跟随" aria-label="跟随车辆" aria-pressed="false"><svg><use href="#i-pin"/></svg><span>跟随</span></button></div>
+        <div class="scene-bottom"><span class="canvas-key"><i class="green"></i>传感器命中<i class="amber"></i>车辆轨迹</span><div class="ruler"><span id="ruler-label">100 mm</span><i id="ruler-line"></i></div></div>
+        <div class="loading" id="loading"><div class="spinner"></div><strong>正在准备实验环境</strong><span>载入赛道与传感器…</span></div>
+      </div>
+      <div class="scene-footer"><span><svg><use href="#i-mouse"/></svg>拖动车辆<span class="dot-sep">·</span>拖动时滚轮旋转<span class="dot-sep">·</span>空白处拖动平移 / 滚轮缩放</span><button class="text-button" id="help-button">操作说明 <span>?</span></button></div>
+      <div class="telemetry-strip"><div><span>位置 X</span><strong id="pos-x">650<span>mm</span></strong></div><div><span>位置 Y</span><strong id="pos-y">1750<span>mm</span></strong></div><div><span>航向角</span><strong id="pose-heading">0.0<span>°</span></strong></div><div><span>车体速度</span><strong id="speed">0.000<span>m/s</span></strong></div><div><span>采样频率</span><strong id="sample-rate">30<span>Hz</span></strong></div></div>
+    </section>
+
+    <aside class="inspector-column" aria-label="数据与参数">
+      <section class="card ir-card" aria-label="红外传感器实时数据"><div class="card-heading"><h2><span class="section-num">01</span>红外传感器</h2><span class="subtle" id="ir-count">8 CHANNELS</span></div><div class="ir-summary"><span><i class="live-dot"></i>实时反射率</span><span><strong id="ir-hits">0</strong> / <span id="ir-total">8</span> 路命中</span></div><div class="sensor-scroll"><div class="sensor-bars" id="sensor-bars"></div></div><div class="card-foot"><span id="threshold-label">阈值 0.65 · 白线检测</span><span>0 暗 <span class="gradient-key"></span> 亮 1</span></div></section>
+      <div class="inspector">
+      <div class="inspector-tabs" role="tablist"><button class="active" id="tab-data" role="tab" aria-selected="true" aria-controls="data-panel"><svg><use href="#i-chart"/></svg>数据监测</button><button id="tab-settings" role="tab" aria-selected="false" aria-controls="settings-panel"><svg><use href="#i-settings"/></svg>参数配置</button></div>
+      <div class="panel-scroll" id="data-panel" role="tabpanel" aria-labelledby="tab-data">
+
+        <section class="card imu-card"><div class="card-heading"><h2><span class="section-num">02</span><span id="imu-heading">九轴惯性导航</span></h2><span class="tiny-tag" id="imu-axis-label">9-AXIS IMU</span></div><div class="heading-display"><div class="compass"><svg viewBox="0 0 86 86" aria-label="二维航向盘"><circle cx="43" cy="43" r="31"/><path class="ticks" d="M43 8v8m0 54v8M8 43h8m54 0h8M18 18l5 5m40 40 5 5M18 68l5-5m40-40 5-5"/><g id="compass-needle"><path class="needle" d="m67 43-30-9 4 9-4 9Z"/><path class="needle-back" d="M41 43H25"/></g><circle class="compass-center" cx="43" cy="43" r="3"/></svg></div><div><span class="subtle">二维航向 / YAW</span><div class="yaw-value"><span id="yaw">0.0</span><small>°</small></div></div><div class="heading-note">顺时针为正<br><span>X → &nbsp; Y ↓</span></div></div>
+          <div class="imu-rows" id="imu-rows"><button class="imu-row active" data-imu="accelerometer"><span class="imu-label">加速度<small>m/s²</small></span><span class="axis x">X <b id="accelerometer-x">0.00</b></span><span class="axis y">Y <b id="accelerometer-y">0.00</b></span><span class="axis z">Z <b id="accelerometer-z">9.81</b></span></button><button class="imu-row" data-imu="gyroscope"><span class="imu-label">角速度<small>rad/s</small></span><span class="axis x">X <b id="gyroscope-x">0.00</b></span><span class="axis y">Y <b id="gyroscope-y">0.00</b></span><span class="axis z">Z <b id="gyroscope-z">0.00</b></span></button><button class="imu-row" data-imu="magnetometer"><span class="imu-label">磁场<small>μT</small></span><span class="axis x">X <b id="magnetometer-x">24.0</b></span><span class="axis y">Y <b id="magnetometer-y">0.00</b></span><span class="axis z">Z <b id="magnetometer-z">−42.0</b></span></button></div>
+          <div class="chart-label"><span id="chart-title">加速度时序</span><span id="history-label">最近 12 s</span></div><canvas id="imu-chart" aria-label="惯导 X Y Z 三轴实时曲线"></canvas><div class="chart-footer"><span>点击上方数据行切换曲线</span><span><i class="x-bg"></i>X <i class="y-bg"></i>Y <i class="z-bg"></i>Z</span></div>
+        </section>
+
+        <section class="card motor-card"><div class="card-heading"><h2><span class="section-num">03</span>双轮驱动</h2><span class="subtle">DIFFERENTIAL</span></div><div class="segmented" id="control-mode"><button class="active" data-mode="manual">手动调试</button><button data-mode="algorithm">算法接口</button></div><div id="manual-controls"><div class="motor-control"><label for="left-rpm">左轮目标 <span><output id="left-target">0</output> RPM</span></label><input type="range" id="left-rpm" min="-180" max="180" value="0" step="1"><div class="motor-range"><span>反转</span><span>实际 <b id="left-actual">0.0</b> RPM</span><span>正转</span></div></div><div class="motor-control"><label for="right-rpm">右轮目标 <span><output id="right-target">0</output> RPM</span></label><input type="range" id="right-rpm" min="-180" max="180" value="0" step="1"><div class="motor-range"><span>反转</span><span>实际 <b id="right-actual">0.0</b> RPM</span><span>正转</span></div></div><label class="check-label"><input type="checkbox" id="link-wheels">联动两轮目标速度</label></div><div class="algorithm-info" id="algorithm-info" hidden><svg><use href="#i-code"/></svg><strong id="algorithm-title">接入你的控制策略</strong><p id="algorithm-description">寻路逻辑预留为空，默认输出零速。修改算法模块后刷新页面。</p><code id="algorithm-path">/algorithms/controller.js</code><p id="algorithm-status" role="status"></p></div><button class="button stop-button" id="stop-motors">停止双轮 / 归零</button></section>
+        <div class="panel-note"><span class="status-dot"></span>基于图片反射率采样 · 平面刚体模型</div>
+      </div>
+
+      <div class="panel-scroll" id="settings-panel" role="tabpanel" aria-labelledby="tab-settings" hidden><div class="settings-intro"><span class="eyebrow">CONFIGURATION</span><h2>构建你的智能车</h2><p id="settings-description">所有参数统一保存在 <code>config.json</code>。<br>调整后应用，或保存为下次启动的默认值。</p></div><form id="settings-form"><section class="settings-group"><h3>赛道资源</h3><label class="field full"><span>赛道图片 <small>选择后点击下方应用或保存</small></span><select id="track-select" aria-label="赛道图片"><option value="">自定义图片路径…</option></select></label><label class="field full" id="custom-track-field" hidden><span>图片路径 <small>相对于项目根目录</small></span><input id="track-image" required disabled></label><label class="field full"><span>红外检测目标</span><select id="detect-mode"><option value="bright">亮线 / 高反射率</option><option value="dark">暗线 / 低反射率</option></select></label></section><div id="config-fields"></div><section class="settings-group"><h3>视图与叠加层</h3><label class="check-label"><input type="checkbox" data-view="followCar">默认跟随车辆</label><label class="check-label"><input type="checkbox" data-view="showGrid">背景网格</label><label class="check-label"><input type="checkbox" data-view="showTrail">车辆运动轨迹</label><label class="check-label"><input type="checkbox" data-view="showSensorFootprints">红外采样点</label></section><button type="button" class="json-toggle text-button" id="edit-json"><svg><use href="#i-code"/></svg>编辑完整 JSON 配置<svg><use href="#i-arrow"/></svg></button><button type="button" class="text-button" id="restore-defaults" hidden>恢复站点默认配置</button></form><div class="settings-actions"><button class="button" id="apply-config">应用并重置</button><button class="button primary" id="save-config"><svg><use href="#i-save"/></svg>保存到配置文件</button></div></div>
+      </div>
+    </aside>
+  </main>
+  <footer class="app-footer"><span><i></i>SMARTCAR SIMULATOR<span class="dot-sep">/</span><span id="environment-label">本地实验环境</span></span><span id="footer-model">差速运动学 · 固定步长 120 Hz</span></footer>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <dialog id="help-dialog"><div class="dialog-heading"><h2>实验台操作说明</h2><button class="close-dialog" aria-label="关闭">×</button></div><div class="help-content"><p><b>放置车辆</b>：按住车身拖动，拖动过程中滚动滚轮可旋转车辆。放置时会暂停仿真并归零双轮。</p><p><b>浏览赛道</b>：空白处拖动平移，滚轮以指针为中心缩放。工具栏可适应赛道、定位车辆或开启持续跟随。开启跟随后车辆保持在画布中心，手动平移或适应赛道会退出跟随。</p><p><b>运行调试</b>：设置左右轮目标 RPM，点击开始或按空格。右上角可实时调整模拟速度，计时器显示仿真时间。暂停冻结仿真；重置恢复初始位置与轮速。急停会立即归零。</p><p><b>红外数据</b>：按车体左侧到右侧编号，均匀分布在模组内。0 为暗，1 为亮；绿点表示达到检测阈值。</p><p><b>惯导数据</b>：三组各三轴输出。车体系 X 向前、Y 向右，航向角顺时针为正。水平时加速度 Z 包含重力，滚转与俯仰固定为 0。航向盘显示仿真真值。</p><p><b>算法实验</b>：切换算法接口模式，在算法模块实现 <code>createController()</code>；每个物理步接收传感器快照并输出双轮 RPM。路线演示模块使用 5 路红外和六轴惯导，当前路段与完赛状态显示在控制区。</p><p class="muted">这是理想平面运动模型，未包含打滑、碰撞、车身倾斜、比赛计分与真实磁干扰。</p></div></dialog>
+  <dialog id="json-dialog"><div class="dialog-heading"><div><h2>完整配置</h2><p>包含初始轮速、算法模块与自定义参数等所有设置。</p></div><button class="close-dialog" aria-label="关闭">×</button></div><textarea id="json-editor" spellcheck="false" aria-label="完整 JSON 配置"></textarea><p class="form-error" id="json-error"></p><input type="file" id="config-file" accept=".json,application/json" hidden><div class="dialog-actions"><button class="button" id="import-config">导入 JSON</button><button class="button" id="export-config">导出 JSON</button><button class="button primary" id="accept-json">校验并填入设置</button></div></dialog>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

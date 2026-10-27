@@ -1,0 +1,16 @@
+{
+  "name": "smartcar-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "二维红外 / 双轮差速 / 九轴惯导智能车实验室",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs",
+    "build": "node scripts/build-pages.mjs",
+    "preview": "node scripts/preview-pages.mjs",
+    "test": "node --test test/*.test.mjs",
+    "demo:check": "node scripts/check-route.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

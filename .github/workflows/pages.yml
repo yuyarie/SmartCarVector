@@ -1,0 +1,59 @@
+name: Publish GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - run: npm run build
+      - name: Update generated gh-pages branch
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --heads origin gh-pages > /dev/null; then
+            git fetch origin gh-pages
+            parent="$(git rev-parse FETCH_HEAD)"
+          fi
+          # 使用独立索引生成发布树，main 工作区和历史保持原样。
+          export GIT_INDEX_FILE="$RUNNER_TEMP/pages-index"
+          git --work-tree=dist add --all
+          tree="$(git write-tree)"
+          if [ -n "${parent:-}" ]; then
+            commit="$(git commit-tree "$tree" -p "$parent" -m "Publish ${GITHUB_SHA}")"
+          else
+            commit="$(git commit-tree "$tree" -m "Publish ${GITHUB_SHA}")"
+          fi
+          git push origin "$commit:refs/heads/gh-pages"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
