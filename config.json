@@ -1,0 +1,194 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 3000
+  },
+  "track": {
+    "image": "简单赛道.png",
+    "widthMm": 2500,
+    "backgroundReflectance": 0.03
+  },
+  "vehicle": {
+    "lengthMm": 100,
+    "widthMm": 100,
+    "initialPose": {
+      "xMm": 650,
+      "yMm": 1750,
+      "headingDeg": 0
+    }
+  },
+  "wheels": {
+    "diameterMm": 80,
+    "widthMm": 16,
+    "gapMm": 0,
+    "maxRpm": 500,
+    "responseTimeSec": 0.12
+  },
+  "infrared": {
+    "count": 5,
+    "widthMm": 80,
+    "depthMm": 10,
+    "gapMm": 35,
+    "sampleRadiusMm": 2,
+    "threshold": 0.65,
+    "detect": "bright",
+    "noiseStd": 0.008
+  },
+  "imu": {
+    "gravity": 9.80665,
+    "magneticFieldUT": {
+      "x": 24,
+      "y": 0,
+      "z": -42
+    },
+    "accelerometerNoiseStd": 0.02,
+    "gyroscopeNoiseStd": 0.02,
+    "magnetometerNoiseStd": 0.08
+  },
+  "simulation": {
+    "fixedStepHz": 120,
+    "sensorHz": 30,
+    "timeScale": 0.5,
+    "speedOptions": [
+      0.5,
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "maxFrameDeltaSec": 0.1,
+    "randomSeed": 42,
+    "trailLimit": 2400
+  },
+  "control": {
+    "mode": "algorithm",
+    "leftRpm": 0,
+    "rightRpm": 0
+  },
+  "algorithm": {
+    "module": "/algorithms/route-demo.js",
+    "inputProfile": "ir5-imu6",
+    "parameters": {
+      "drive": {
+        "wheelDiameterMm": 80,
+        "wheelbaseMm": 116,
+        "responseTimeSec": 0.12,
+        "sensorForwardMm": 90
+      },
+      "route": [
+        {
+          "name": "发车 → 中左下角",
+          "turnDeg": -90,
+          "turnAt": "branch"
+        },
+        {
+          "name": "中左竖线向上",
+          "turnDeg": 90,
+          "turnAt": "end"
+        },
+        {
+          "name": "上边向右",
+          "turnDeg": 90,
+          "turnAt": "end"
+        },
+        {
+          "name": "右侧向下",
+          "turnDeg": 90,
+          "turnAt": "end"
+        },
+        {
+          "name": "右下向左",
+          "turnDeg": 90,
+          "turnAt": "branch"
+        },
+        {
+          "name": "中右竖线向上",
+          "turnDeg": -90,
+          "turnAt": "end"
+        },
+        {
+          "name": "上边向左",
+          "turnDeg": -90,
+          "turnAt": "end"
+        },
+        {
+          "name": "左侧向下",
+          "turnDeg": -90,
+          "turnAt": "end"
+        },
+        {
+          "name": "左下 → 发车区",
+          "turnDeg": 0,
+          "turnAt": "finish"
+        }
+      ],
+      "calibrationSec": 0.6,
+      "timeoutSec": 240,
+      "cruiseRpm": 50,
+      "approachRpm": 35,
+      "acquireRpm": 22,
+      "exitRpm": 22,
+      "maxRpm": 120,
+      "lineKp": 18,
+      "lineKd": 7,
+      "maxLineCorrectionRpm": 38,
+      "headingKp": 60,
+      "headingKd": 8,
+      "darkReflectance": 0.13,
+      "lineThreshold": 0.4,
+      "centerTolerance": 0.4,
+      "lineLearnRateRadSec": 0.2,
+      "lineLearnSec": 0.12,
+      "lineLearnTimeSec": 0.4,
+      "initialAlignMm": 120,
+      "acquireSweepDeg": 55,
+      "acquireThreshold": 0.65,
+      "acquireTimeoutSec": 10,
+      "maxTurnRadSec": 3,
+      "searchRadSec": 0.9,
+      "minTurnDeg": 70,
+      "maxTurnDeg": 135,
+      "slowTurnDeg": 55,
+      "turnKp": 6,
+      "turnKd": 1,
+      "turnLineKp": 2,
+      "turnTimeoutSec": 4,
+      "confirmSamples": 2,
+      "exitTurnRateRadSec": 0.35,
+      "returnToleranceDeg": 3,
+      "approachTimeSec": 0.15,
+      "approachTimeoutSec": 4,
+      "scanEntrySpeedMmSec": 30,
+      "centerStopMm": 3,
+      "lineHalfWidthMm": 8,
+      "eventRearmMm": 120,
+      "componentBridgeMm": 120,
+      "lossProbeMm": 35,
+      "junctionMinTravelMm": 160,
+      "maxBlindTravelMm": 350,
+      "finishMinTravelMm": 150,
+      "finishStopMm": 5,
+      "biasTrackSec": 1.5,
+      "lineGuardKp": 60,
+      "lineGuardAfterMm": 250,
+      "captureMinDeg": 45,
+      "turnCreepRpm": 20
+    }
+  },
+  "view": {
+    "followCar": false,
+    "minZoom": 0.05,
+    "maxZoom": 8,
+    "zoomSensitivity": 0.0015,
+    "rotationStepDeg": 15,
+    "fitPaddingPx": 80,
+    "gridMm": 100,
+    "showGrid": true,
+    "showTrail": true,
+    "showSensorFootprints": true,
+    "historySeconds": 12,
+    "uiHz": 15
+  }
+}
