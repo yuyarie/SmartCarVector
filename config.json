@@ -48,7 +48,7 @@
   "simulation": {
     "fixedStepHz": 120,
     "sensorHz": 30,
-    "timeScale": 0.5,
+    "timeScale": 1,
     "speedOptions": [
       0.5,
       1,
